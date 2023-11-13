@@ -1,0 +1,9 @@
+<manifest projecttype="ACCOUNTCUSTOMIZATION">
+  <projectname>ST PLE Create File Chunks</projectname>
+  <frameworkversion>1.0</frameworkversion>
+  <dependencies>
+    <features>
+      <feature required="false">CREATESUITEBUNDLES</feature>
+    </features>
+  </dependencies>
+</manifest>
