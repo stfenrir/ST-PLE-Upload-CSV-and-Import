@@ -66,8 +66,8 @@
     <scriptdeployment scriptid="customdeploy_st_mr_create_file_chunks">
       <buffersize>1</buffersize>
       <concurrencylimit>1</concurrencylimit>
-      <custscript_st_mr_chunked_file_ids>[400371,400372,400373,400374,400375,400376]</custscript_st_mr_chunked_file_ids>
-      <custscript_st_mr_csv_to_import>23564</custscript_st_mr_csv_to_import>
+      <custscript_st_mr_chunked_file_ids>[400673,400674,400675,400676,400677,400678,400679,400680,400681,400682,400683,400684,400685,400686,400687,400688,400689,400690,400691,400692,400693,400694,400695,400696,400697,400698,400699,400700,400701,400702,400703,400704,400705,400706,400707,400708,400709,400710,400711,400712,400713,400714]</custscript_st_mr_chunked_file_ids>
+      <custscript_st_mr_csv_to_import>400672</custscript_st_mr_csv_to_import>
       <isdeployed>T</isdeployed>
       <loglevel>DEBUG</loglevel>
       <queueallstagesatonce>T</queueallstagesatonce>
