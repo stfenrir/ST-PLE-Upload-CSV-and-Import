@@ -1,5 +1,5 @@
-<scheduledscript scriptid="customscript_st_ss_trigger_csv_import">
-  <description></description>
+<scheduledscript scriptid="customscript_st_trigger_csv_import">
+  <description>A Scheduled Script that regularly checks for billing files for importing.</description>
   <isinactive>F</isinactive>
   <name>ST Trigger CSV Import</name>
   <notifyadmins>F</notifyadmins>
@@ -9,7 +9,7 @@
   <scriptcustomfields>
     <scriptcustomfield scriptid="custscript_to_processed_folder">
       <accesslevel>2</accesslevel>
-      <applyformatting>F</applyformatting>
+      <applyformatting>T</applyformatting>
       <checkspelling>F</checkspelling>
       <defaultchecked>F</defaultchecked>
       <defaultselection></defaultselection>
@@ -19,11 +19,11 @@
       <displaytype>NORMAL</displaytype>
       <displaywidth></displaywidth>
       <dynamicdefault></dynamicdefault>
-      <fieldtype>TEXT</fieldtype>
+      <fieldtype>INTEGER</fieldtype>
       <help></help>
       <isformula>F</isformula>
       <ismandatory>F</ismandatory>
-      <label>To Process Folder</label>
+      <label>To Be Processed Folder ID</label>
       <linktext></linktext>
       <maxlength></maxlength>
       <maxvalue></maxvalue>
@@ -36,7 +36,7 @@
     </scriptcustomfield>
     <scriptcustomfield scriptid="custscript_processed_folder">
       <accesslevel>2</accesslevel>
-      <applyformatting>F</applyformatting>
+      <applyformatting>T</applyformatting>
       <checkspelling>F</checkspelling>
       <defaultchecked>F</defaultchecked>
       <defaultselection></defaultselection>
@@ -46,11 +46,11 @@
       <displaytype>NORMAL</displaytype>
       <displaywidth></displaywidth>
       <dynamicdefault></dynamicdefault>
-      <fieldtype>TEXT</fieldtype>
+      <fieldtype>INTEGER</fieldtype>
       <help></help>
       <isformula>F</isformula>
       <ismandatory>F</ismandatory>
-      <label>Processed Folder</label>
+      <label>Processed Folder ID</label>
       <linktext></linktext>
       <maxlength></maxlength>
       <maxvalue></maxvalue>
@@ -63,7 +63,7 @@
     </scriptcustomfield>
     <scriptcustomfield scriptid="custscript_ref_error_au_folder">
       <accesslevel>2</accesslevel>
-      <applyformatting>F</applyformatting>
+      <applyformatting>T</applyformatting>
       <checkspelling>F</checkspelling>
       <defaultchecked>F</defaultchecked>
       <defaultselection></defaultselection>
@@ -73,11 +73,11 @@
       <displaytype>NORMAL</displaytype>
       <displaywidth></displaywidth>
       <dynamicdefault></dynamicdefault>
-      <fieldtype>TEXT</fieldtype>
+      <fieldtype>INTEGER</fieldtype>
       <help></help>
       <isformula>F</isformula>
       <ismandatory>F</ismandatory>
-      <label>Error Folder</label>
+      <label>Error Folder ID</label>
       <linktext></linktext>
       <maxlength></maxlength>
       <maxvalue></maxvalue>
@@ -90,7 +90,7 @@
     </scriptcustomfield>
     <scriptcustomfield scriptid="custscript_csv_map_id">
       <accesslevel>2</accesslevel>
-      <applyformatting>F</applyformatting>
+      <applyformatting>T</applyformatting>
       <checkspelling>F</checkspelling>
       <defaultchecked>F</defaultchecked>
       <defaultselection></defaultselection>
@@ -100,11 +100,11 @@
       <displaytype>NORMAL</displaytype>
       <displaywidth></displaywidth>
       <dynamicdefault></dynamicdefault>
-      <fieldtype>TEXT</fieldtype>
+      <fieldtype>INTEGER</fieldtype>
       <help></help>
       <isformula>F</isformula>
       <ismandatory>F</ismandatory>
-      <label>Mapping ID</label>
+      <label>CSV Mapping ID</label>
       <linktext></linktext>
       <maxlength></maxlength>
       <maxvalue></maxvalue>
@@ -117,21 +117,38 @@
     </scriptcustomfield>
   </scriptcustomfields>
   <scriptdeployments>
-    <scriptdeployment scriptid="customdeploy_st_ss_trigger_csv_import">
-      <custscript_csv_map_id>26</custscript_csv_map_id>
-      <custscript_processed_folder>2967</custscript_processed_folder>
-      <custscript_ref_error_au_folder>2968</custscript_ref_error_au_folder>
-      <custscript_to_processed_folder>2966</custscript_to_processed_folder>
+    <scriptdeployment scriptid="customdeploy_st_trigger_csv_import_2">
+      <custscript_csv_map_id>58</custscript_csv_map_id>
+      <custscript_processed_folder>15901</custscript_processed_folder>
+      <custscript_ref_error_au_folder>15902</custscript_ref_error_au_folder>
+      <custscript_to_processed_folder>15900</custscript_to_processed_folder>
       <isdeployed>T</isdeployed>
       <loglevel>DEBUG</loglevel>
       <status>NOTSCHEDULED</status>
-      <title>ST Trigger CSV Import</title>
+      <title>ST Trigger CSV Import 2</title>
       <recurrence>
         <single>
           <repeat></repeat>
-          <startdate>2023-11-13</startdate>
-          <starttime>10:00:00Z</starttime>
+          <startdate>2023-03-07</startdate>
+          <starttime>23:00:00Z</starttime>
         </single>
+      </recurrence>
+    </scriptdeployment>
+    <scriptdeployment scriptid="customdeploy_st_trigger_csv_import">
+      <custscript_csv_map_id>58</custscript_csv_map_id>
+      <custscript_processed_folder>15901</custscript_processed_folder>
+      <custscript_ref_error_au_folder>15902</custscript_ref_error_au_folder>
+      <custscript_to_processed_folder>15900</custscript_to_processed_folder>
+      <isdeployed>T</isdeployed>
+      <loglevel>DEBUG</loglevel>
+      <status>TESTING</status>
+      <title>ST Trigger CSV Import</title>
+      <recurrence>
+        <everyweekday>
+          <repeat>PT30M</repeat>
+          <startdate>2023-01-12</startdate>
+          <starttime>10:30:00Z</starttime>
+        </everyweekday>
       </recurrence>
     </scriptdeployment>
   </scriptdeployments>

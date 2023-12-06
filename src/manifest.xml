@@ -4,6 +4,7 @@
   <dependencies>
     <features>
       <feature required="false">CREATESUITEBUNDLES</feature>
+      <feature required="true">SERVERSIDESCRIPTING</feature>
     </features>
   </dependencies>
 </manifest>

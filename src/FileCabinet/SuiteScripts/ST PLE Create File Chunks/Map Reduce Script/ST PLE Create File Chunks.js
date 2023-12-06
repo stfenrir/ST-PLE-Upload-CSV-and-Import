@@ -23,6 +23,10 @@ define(['N/record', 'N/task', 'N/runtime', 'N/file'],
          * @since 2015.2
          */
 
+        const FOLDER_ID = 15900; //TEMPLATES/Marketing Templates/ST PLE Import Large Data/ To Process
+        const DEPLOYMENT_ID = 941;
+        const PARAM_FILE_IDS = 'custscript_st_mr_chunked_file_ids'
+
         const getInputData = (inputContext) => {
             try {
                 // Get file ID of the CSV file to import from the script parameter
@@ -96,7 +100,7 @@ define(['N/record', 'N/task', 'N/runtime', 'N/file'],
 
         const map = (mapContext) => {
             try {
-                const FOLDER_ID = 2966;
+
                 const value = mapContext.value;
                 log.debug('value',value)
                 // Generate a unique timestamp to append to the filename
@@ -176,8 +180,6 @@ define(['N/record', 'N/task', 'N/runtime', 'N/file'],
          * @since 2015.2
          */
         const summarize = (summaryContext) => {
-            const DEPLOYMENT_ID = 1209;
-            const PARAM_FILE_IDS = 'custscript_st_mr_chunked_file_ids'
             let script_deployment = record.load({type: record.Type.SCRIPT_DEPLOYMENT, id: DEPLOYMENT_ID});
 
             //get fields Ids from the reduce stage.
