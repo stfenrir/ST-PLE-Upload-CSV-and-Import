@@ -96,8 +96,9 @@ define(['N/runtime', 'N/ui/serverWidget', 'N/file', 'N/task'],
                         chunks.push(chunk);
                     }
                     log.debug(`Chunk length ${chunks.length}`)
+
                     for (let i = 0; i < chunks.length; i++) {
-                        var fileName = `chunked_csv_file_number_${i + 1}`;
+                        var fileName = `chunked_csv_file_number_${parseInt(i) + parseInt(1)}`;
                         // Use file.create to get the file ID
                         let newFile = file.create({
                             name: fileName,
