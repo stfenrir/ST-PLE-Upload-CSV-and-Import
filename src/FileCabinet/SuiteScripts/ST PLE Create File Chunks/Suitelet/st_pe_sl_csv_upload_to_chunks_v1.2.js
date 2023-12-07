@@ -22,38 +22,15 @@ define(['N/runtime', 'N/ui/serverWidget', 'N/file', 'N/task'],
          * @since 2015.2
          */
         const HTML_FILEPATH = '/SuiteScripts/ST PLE Create File Chunks/Library/initialHtmlStyle.html';
-
         const onRequest = (scriptContext) => {
             try {
 
                 if (scriptContext.request.method === 'GET') {
+                    //load html file from library folder
+                    let htmlFile = file.load({ id: HTML_FILEPATH});
+                    let htmlPage = htmlFile.getContents();
 
-                    var htmlFile = file.load({ id: HTML_FILEPATH});
-                    var htmlPage = htmlFile.getContents();
-
-                    /*
-                    var form = serverWidget.createForm({
-                        title: 'Upload CSV to Import',
-                        hideNavBar: false
-                    });
-
-                    // Add a file upload field
-                    var fileField = form.addField({
-                        id: 'custpage_file_upload',
-                        type: serverWidget.FieldType.FILE,
-                        label: 'Upload CSV File'
-                    });
-
-
-                    fileField.container = CSV_FOLDER;
-
-                    // Add a submit button
-                    form.addSubmitButton({
-                        label: 'Submit File'
-                    });
-
-                     */
-
+                    //Display the html file
                     scriptContext.response.write(htmlPage);
 
                 } else if (scriptContext.request.method === 'POST') {
@@ -80,11 +57,12 @@ define(['N/runtime', 'N/ui/serverWidget', 'N/file', 'N/task'],
                                 taskType: task.TaskType.SCHEDULED_SCRIPT,
                                 scriptId: SCHEDULED_SCRIPT,
                             }).submit();
+
                             log.debug(`Scheduled Script Scheduled. Task ID: ${scheduledScriptId}`);
-                            let taskStatus = task.checkStatus(scheduledScriptId);
+
                             displayMessage(`Scheduled Script is Executed. Please go to <a href="https://7309664-sb1.app.netsuite.com/app/setup/upload/csv/csvstatus.nl?daterange=TODAY&datefrom=12%2F06%2F2023&dateto=12%2F06%2F2023&sortcol=dcreated_sort&sortdir=DESC&csv=HTML&OfficeXML=F&pdf=&size=50&_csrf=d0HvflWpPu7dZLHk-CizXfJce-WZl3giyhg1DjNldFPlLADfF8Q4vzvjVy2c7QZfhZlMAtT8atN2bj-xB9hkAEu_B8IHUTfAYO2KRVgJxwSdiM71a7Wx_YGh9ARwIB9NfuuRHP4uN4dTWjeiyrCNC9EZs9XgOKH44MRtpBapUbQ%3D&datemodi=WITHIN&date=TODAY">Job Status</a>
  to monitor the csv import.`, scriptContext);
-                            //displayMessage(result.message, scriptContext);
+
                         })
                         .catch((error) => {
                             displayMessage(error.message, scriptContext);
@@ -100,7 +78,7 @@ define(['N/runtime', 'N/ui/serverWidget', 'N/file', 'N/task'],
 
         const processFile = (uploadedFile) => {
 
-            const CHUNK_SIZE = runtime.getCurrentScript().getParameter({name: 'custscript_number_of_rows_for_csv'});;
+            const CHUNK_SIZE = runtime.getCurrentScript().getParameter({name: 'custscript_number_of_rows_for_csv'});
             log.audit('Max Number of Rows: ' + CHUNK_SIZE)
 
             return new Promise((resolve, reject) => {
