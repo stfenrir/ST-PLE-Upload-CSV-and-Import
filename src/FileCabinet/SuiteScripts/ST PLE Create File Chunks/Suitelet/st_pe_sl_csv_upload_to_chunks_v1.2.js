@@ -21,17 +21,35 @@ define(['N/runtime', 'N/ui/serverWidget', 'N/file', 'N/task'],
          * @param {ServerResponse} scriptContext.response - Suitelet response
          * @since 2015.2
          */
-        const HTML_FILEPATH = '/SuiteScripts/ST PLE Create File Chunks/Library/initialHtmlStyle.html';
         const onRequest = (scriptContext) => {
             try {
-
+                const ACCOUNT_ID = runtime.accountId;
+                log.debug(`Account ID ${ACCOUNT_ID}`)
+                const SANDBOX_ID = '7309664_SB1'
+                let jobStatusPage = ACCOUNT_ID === SANDBOX_ID ? 'https://7309664-sb1.app.netsuite.com/app/setup/upload/csv/csvstatus.nl?whence=' : 'https://7309664.app.netsuite.com/app/setup/upload/csv/csvstatus.nl?whence=';
                 if (scriptContext.request.method === 'GET') {
-                    //load html file from library folder
-                    let htmlFile = file.load({ id: HTML_FILEPATH});
-                    let htmlPage = htmlFile.getContents();
 
-                    //Display the html file
-                    scriptContext.response.write(htmlPage);
+                    let form = serverWidget.createForm({
+                        title: 'Upload CSV to Import',
+                        hideNavBar: false
+                    });
+
+                    // Add a file upload field
+                    let fileField = form.addField({
+                        id: 'custpage_file_upload',
+                        type: serverWidget.FieldType.FILE,
+                        label: 'Upload CSV File'
+                    });
+
+
+                    fileField.container = CSV_FOLDER;
+
+                    // Add a submit button
+                    form.addSubmitButton({
+                        label: 'Submit File'
+                    });
+
+                    scriptContext.response.writePage(form);
 
                 } else if (scriptContext.request.method === 'POST') {
 
@@ -60,8 +78,7 @@ define(['N/runtime', 'N/ui/serverWidget', 'N/file', 'N/task'],
 
                             log.debug(`Scheduled Script Scheduled. Task ID: ${scheduledScriptId}`);
 
-                            displayMessage(`Scheduled Script is Executed. Please go to <a href="https://7309664-sb1.app.netsuite.com/app/setup/upload/csv/csvstatus.nl?daterange=TODAY&datefrom=12%2F06%2F2023&dateto=12%2F06%2F2023&sortcol=dcreated_sort&sortdir=DESC&csv=HTML&OfficeXML=F&pdf=&size=50&_csrf=d0HvflWpPu7dZLHk-CizXfJce-WZl3giyhg1DjNldFPlLADfF8Q4vzvjVy2c7QZfhZlMAtT8atN2bj-xB9hkAEu_B8IHUTfAYO2KRVgJxwSdiM71a7Wx_YGh9ARwIB9NfuuRHP4uN4dTWjeiyrCNC9EZs9XgOKH44MRtpBapUbQ%3D&datemodi=WITHIN&date=TODAY">Job Status</a>
- to monitor the csv import.`, scriptContext);
+                            displayMessage(`CSV import has started. Please go to <a href="${jobStatusPage}">Job Status</a> to monitor the csv import.`, scriptContext);
 
                         })
                         .catch((error) => {

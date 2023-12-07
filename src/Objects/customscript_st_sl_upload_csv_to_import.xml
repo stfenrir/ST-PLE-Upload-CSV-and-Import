@@ -1,0 +1,55 @@
+<suitelet scriptid="customscript_st_sl_upload_csv_to_import">
+  <description></description>
+  <isinactive>F</isinactive>
+  <name>ST PE Upload CSV File to Import</name>
+  <notifyadmins>F</notifyadmins>
+  <notifyemails></notifyemails>
+  <notifyowner>T</notifyowner>
+  <notifyuser>F</notifyuser>
+  <scriptfile>[/SuiteScripts/ST PLE Create File Chunks/Suitelet/st_pe_sl_csv_upload_to_chunks_v1.2.js]</scriptfile>
+  <scriptcustomfields>
+    <scriptcustomfield scriptid="custscript_number_of_rows_for_csv">
+      <accesslevel>2</accesslevel>
+      <applyformatting>F</applyformatting>
+      <checkspelling>F</checkspelling>
+      <defaultchecked>F</defaultchecked>
+      <defaultselection></defaultselection>
+      <defaultvalue></defaultvalue>
+      <description></description>
+      <displayheight></displayheight>
+      <displaytype>NORMAL</displaytype>
+      <displaywidth></displaywidth>
+      <dynamicdefault></dynamicdefault>
+      <fieldtype>TEXT</fieldtype>
+      <help>Indicate the max number of rows for each CSV chunk</help>
+      <isformula>F</isformula>
+      <ismandatory>F</ismandatory>
+      <label>Number of Rows for CSV</label>
+      <linktext></linktext>
+      <maxlength></maxlength>
+      <maxvalue></maxvalue>
+      <minvalue></minvalue>
+      <onparentdelete></onparentdelete>
+      <searchlevel>2</searchlevel>
+      <selectrecordtype></selectrecordtype>
+      <setting></setting>
+      <storevalue>T</storevalue>
+    </scriptcustomfield>
+  </scriptcustomfields>
+  <scriptdeployments>
+    <scriptdeployment scriptid="customdeploy_st_sl_upload_csv_to_import">
+      <allemployees>F</allemployees>
+      <allpartners>F</allpartners>
+      <allroles>T</allroles>
+      <audslctrole></audslctrole>
+      <custscript_number_of_rows_for_csv></custscript_number_of_rows_for_csv>
+      <eventtype></eventtype>
+      <isdeployed>T</isdeployed>
+      <isonline>F</isonline>
+      <loglevel>DEBUG</loglevel>
+      <runasrole>ADMINISTRATOR</runasrole>
+      <status>RELEASED</status>
+      <title>ST PE Upload CSV File to Import</title>
+    </scriptdeployment>
+  </scriptdeployments>
+</suitelet>
