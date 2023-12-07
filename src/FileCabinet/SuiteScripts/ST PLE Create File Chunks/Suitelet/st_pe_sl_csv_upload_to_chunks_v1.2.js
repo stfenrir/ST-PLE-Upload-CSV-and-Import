@@ -56,12 +56,12 @@ define(['N/runtime', 'N/ui/serverWidget', 'N/file', 'N/task'],
                     let uploadedFile = scriptContext.request.files.custpage_file_upload;
                     log.debug(`UploadedFile size ${uploadedFile.size}`)
 
-                    var postForm = serverWidget.createForm({
+                    let postForm = serverWidget.createForm({
                         title: 'Upload Status',
                         hideNavBar: false
                     });
 
-                    var messageField = postForm.addField({
+                    let messageField = postForm.addField({
                         id: 'custpage_message',
                         type: serverWidget.FieldType.INLINEHTML,
                         label: 'Message'
@@ -95,7 +95,8 @@ define(['N/runtime', 'N/ui/serverWidget', 'N/file', 'N/task'],
 
         const processFile = (uploadedFile) => {
 
-            const CHUNK_SIZE = runtime.getCurrentScript().getParameter({name: 'custscript_number_of_rows_for_csv'});
+            //const CHUNK_SIZE = runtime.getCurrentScript().getParameter({name: 'custscript_number_of_rows_for_csv'});
+            const CHUNK_SIZE = 24999;
             log.audit('Max Number of Rows: ' + CHUNK_SIZE)
 
             return new Promise((resolve, reject) => {
@@ -124,6 +125,7 @@ define(['N/runtime', 'N/ui/serverWidget', 'N/file', 'N/task'],
                 }
 
                 log.debug(`Chunk length ${chunks.length}`);
+                log.debug(`FileName ${uploadedFile.name}`);
 
                 let fileId;
                 const timestamp = new Date().getTime();
@@ -131,7 +133,7 @@ define(['N/runtime', 'N/ui/serverWidget', 'N/file', 'N/task'],
 
                 for (let i = 0; i < chunks.length; i++) {
                     counter++
-                    let filename = 'File_chunk_' + counter + '_csv' + timestamp;
+                    let filename = uploadedFile.name + '_chunk_' + counter + '_' + timestamp;
                     let newFile = file.create({
                         name: filename,
                         fileType: file.Type.CSV,
@@ -151,12 +153,12 @@ define(['N/runtime', 'N/ui/serverWidget', 'N/file', 'N/task'],
         };
 
         const displayMessage = (message, scriptContext ) => {
-            var form = serverWidget.createForm({
+            let form = serverWidget.createForm({
                 title: 'Status',
                 hideNavBar: false
             });
 
-            var messageField = form.addField({
+            let messageField = form.addField({
                 id: 'custpage_message',
                 type: serverWidget.FieldType.INLINEHTML,
                 label: 'Message'
