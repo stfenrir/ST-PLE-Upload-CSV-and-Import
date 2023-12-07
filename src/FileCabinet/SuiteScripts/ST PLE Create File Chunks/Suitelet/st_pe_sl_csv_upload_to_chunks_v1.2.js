@@ -12,7 +12,6 @@ define(['N/runtime', 'N/ui/serverWidget', 'N/file', 'N/task'],
      */
     (runtime, serverWidget, file, task) => {
         const CSV_FOLDER = 15900;
-        const MAP_REDUCE_SCRIPT = 'customscript_st_mr_create_file_chunks';
         const SCHEDULED_SCRIPT = 'customscript_st_trigger_csv_import';
 
         /**
@@ -22,11 +21,19 @@ define(['N/runtime', 'N/ui/serverWidget', 'N/file', 'N/task'],
          * @param {ServerResponse} scriptContext.response - Suitelet response
          * @since 2015.2
          */
+        const HTML_FILEPATH = '/SuiteScripts/ST PLE Create File Chunks/Library/initialHtmlStyle.html';
+
         const onRequest = (scriptContext) => {
             try {
+
                 if (scriptContext.request.method === 'GET') {
+
+                    var htmlFile = file.load({ id: HTML_FILEPATH});
+                    var htmlPage = htmlFile.getContents();
+
+                    /*
                     var form = serverWidget.createForm({
-                        title: 'Upload Large CSV file to create smaller CSV files',
+                        title: 'Upload CSV to Import',
                         hideNavBar: false
                     });
 
@@ -37,13 +44,6 @@ define(['N/runtime', 'N/ui/serverWidget', 'N/file', 'N/task'],
                         label: 'Upload CSV File'
                     });
 
-                    var messageField = form.addField({
-                        id: 'custpage_message',
-                        type: serverWidget.FieldType.INLINEHTML,
-                        label: 'Message'
-                    });
-
-                    messageField.defaultValue = `<h1>Please Upload a CSV File</h1>`;
 
                     fileField.container = CSV_FOLDER;
 
@@ -52,118 +52,112 @@ define(['N/runtime', 'N/ui/serverWidget', 'N/file', 'N/task'],
                         label: 'Submit File'
                     });
 
-                    scriptContext.response.writePage(form);
+                     */
+
+                    scriptContext.response.write(htmlPage);
 
                 } else if (scriptContext.request.method === 'POST') {
-                    displayMessage(`Trying to save the CSV file on FileCabinet`,scriptContext);
 
-                    //const CHUNK_SIZE = runtime.getCurrentScript().getParameter({name: 'custscript_number_of_rows'});;
-                    const CHUNK_SIZE = 29999;
-                    log.audit('Max Number of Rows: ' + CHUNK_SIZE)
-
-                    // Retrieve the uploaded file
                     let uploadedFile = scriptContext.request.files.custpage_file_upload;
                     log.debug(`UploadedFile size ${uploadedFile.size}`)
 
-                    // Use method to get an iterator for each line of the loaded file
-                    const lineIterator = uploadedFile.lines.iterator();
-                    let header = null;
-                    let rows = [];
-                    let chunks = [];
-                    let timestamp = new Date().getTime();
-                    log.debug('timestamp', timestamp);
-                    lineIterator.each(function (line) {
-                        if (!header) {
-                            // This is the first line, which is the header
-                            header = line.value;
-                            log.debug('Headers', header);
-                        } else {
-                            // When the header is already acquired, each line will be pushed to the rows array
-                            rows.push(line.value);
-                            // When the rows array is equal to the CHUNK_SIZE, attach the header to the rows array and push it to the chunks array.
-                            if (rows.length === CHUNK_SIZE) {
-                                const chunk = [header, ...rows].join('\n');
-                                chunks.push(chunk);
-                                rows = [];
-                            }
-                        }
-                        return true;
+                    var postForm = serverWidget.createForm({
+                        title: 'Upload Status',
+                        hideNavBar: false
                     });
 
-                    // For the remaining lines that did not achieve the number of specified CHUNK_SIZE, take all those and attach the header and push it to the chunks array
-                    if (header !== null && rows.length > 0) {
-                        const chunk = [header, ...rows].join('\n');
-                        chunks.push(chunk);
-                    }
-                    log.debug(`Chunk length ${chunks.length}`)
+                    var messageField = postForm.addField({
+                        id: 'custpage_message',
+                        type: serverWidget.FieldType.INLINEHTML,
+                        label: 'Message'
+                    });
+                    messageField.defaultValue = `<h1>Script is executed</h1>`;
 
-                    for (let i = 0; i < chunks.length; i++) {
-                        var fileName = `chunked_csv_file_number_${parseInt(i) + parseInt(1)}`;
-                        // Use file.create to get the file ID
-                        let newFile = file.create({
-                            name: fileName,
-                            fileType: file.Type.CSV,
-                            contents: chunks[i],
-                            folder: CSV_FOLDER
+                    // Process the file and handle promises
+                    processFile(uploadedFile)
+                        .then((result) => {
+                            let scheduledScriptId = task.create({
+                                taskType: task.TaskType.SCHEDULED_SCRIPT,
+                                scriptId: SCHEDULED_SCRIPT,
+                            }).submit();
+                            log.debug(`Scheduled Script Scheduled. Task ID: ${scheduledScriptId}`);
+                            let taskStatus = task.checkStatus(scheduledScriptId);
+                            displayMessage(`Scheduled Script is Executed. Please go to <a href="https://7309664-sb1.app.netsuite.com/app/setup/upload/csv/csvstatus.nl?daterange=TODAY&datefrom=12%2F06%2F2023&dateto=12%2F06%2F2023&sortcol=dcreated_sort&sortdir=DESC&csv=HTML&OfficeXML=F&pdf=&size=50&_csrf=d0HvflWpPu7dZLHk-CizXfJce-WZl3giyhg1DjNldFPlLADfF8Q4vzvjVy2c7QZfhZlMAtT8atN2bj-xB9hkAEu_B8IHUTfAYO2KRVgJxwSdiM71a7Wx_YGh9ARwIB9NfuuRHP4uN4dTWjeiyrCNC9EZs9XgOKH44MRtpBapUbQ%3D&datemodi=WITHIN&date=TODAY">Job Status</a>
+ to monitor the csv import.`, scriptContext);
+                            //displayMessage(result.message, scriptContext);
+                        })
+                        .catch((error) => {
+                            displayMessage(error.message, scriptContext);
                         });
 
-                        let fileId = newFile.save()
-                        log.debug(`File is Saved ${fileId}`)
-                    }
-
-                    /*
-
-
-                    const header = strFileContent.shift();
-                    const rows = strFileContent.split('\n');
-                    let timestamp = new Date().getTime();
-                    var counter = 0;
-
-                    // Process data in chunks
-                    for (var i = 0; i < rows.length; i += CHUNK_SIZE) {
-                        counter++
-                        //Slice row into 29999
-                        const chunk = rows.slice(i, i + CHUNK_SIZE).join('\n');
-                        var fileName = `chunked_csv_file_${counter}_${timestamp}`;
-
-                        let contents = header + '\n' + chunk;
-
-                        // Use file.create to get the file ID
-                        let newFile = file.create({
-                            name: fileName,
-                            fileType: file.Type.CSV,
-                            contents: contents,
-                            folder: CSV_FOLDER
-                        });
-
-                        let fileId = newFile.save();
-                        log.debug(`File Uploaded ${fileId}`)
-
-                    }
-
-                     */
-
-                    // Create a Scheduled Script task
-                    let scheduledScriptId = task.create({
-                        taskType: task.TaskType.SCHEDULED_SCRIPT,
-                        scriptId: SCHEDULED_SCRIPT,
-                    }).submit();
-
-                    log.debug(`Scheduled Script Scheduled. Task ID: ${scheduledScriptId}`);
-                    let taskStatus = task.checkStatus(scheduledScriptId);
-                    // Display message with Scheduled Script Scheduled status
-                    displayMessage(`Scheduled Script is Executed. Status: ${taskStatus.status}`,scriptContext);
-
-
+                    scriptContext.response.writePage(postForm);
                 }
+
             } catch (e) {
                 log.error(`Error Message `, e);
             }
         };
 
+        const processFile = (uploadedFile) => {
+
+            const CHUNK_SIZE = runtime.getCurrentScript().getParameter({name: 'custscript_number_of_rows_for_csv'});;
+            log.audit('Max Number of Rows: ' + CHUNK_SIZE)
+
+            return new Promise((resolve, reject) => {
+                const lineIterator = uploadedFile.lines.iterator();
+                let header = null;
+                let rows = [];
+                let chunks = [];
+
+                lineIterator.each(function (line) {
+                    if (!header) {
+                        header = line.value;
+                    } else {
+                        rows.push(line.value);
+                        if (rows.length === CHUNK_SIZE) {
+                            const chunk = [header, ...rows].join('\n');
+                            chunks.push(chunk);
+                            rows = [];
+                        }
+                    }
+                    return true;
+                });
+
+                if (header !== null && rows.length > 0) {
+                    const chunk = [header, ...rows].join('\n');
+                    chunks.push(chunk);
+                }
+
+                log.debug(`Chunk length ${chunks.length}`);
+
+                let fileId;
+                const timestamp = new Date().getTime();
+                let counter = 0;
+
+                for (let i = 0; i < chunks.length; i++) {
+                    counter++
+                    let filename = 'File_chunk_' + counter + '_csv' + timestamp;
+                    let newFile = file.create({
+                        name: filename,
+                        fileType: file.Type.CSV,
+                        contents: chunks[i],
+                        folder: CSV_FOLDER,
+                    });
+                    fileId = newFile.save();
+                    log.debug(`File is Saved ${fileId}`);
+                }
+
+                if (fileId) {
+                    resolve({ message: 'CSV File is saved successfully' });
+                } else {
+                    reject({ message: 'Failed saving the CSV file' });
+                }
+            });
+        };
+
         const displayMessage = (message, scriptContext ) => {
             var form = serverWidget.createForm({
-                title: 'Map Reduce Status',
+                title: 'Status',
                 hideNavBar: false
             });
 
