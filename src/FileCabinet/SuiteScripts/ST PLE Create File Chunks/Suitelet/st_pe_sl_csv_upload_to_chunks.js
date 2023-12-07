@@ -116,17 +116,6 @@ define(['N/runtime', 'N/ui/serverWidget', 'N/file', 'N/task'],
                 // Display message with Map/Reduce status
                 displayMessage(`Scheduled Script is Executed. Status: ${taskStatus.status}`,scriptContext);
 
-                /*
-
-
-                } else {
-                    log.debug(`First task has not completed yet. Status: ${taskStatus.status}`);
-                    // Display message with Map/Reduce status
-                    displayMessage(`Map Reduce Script is Executed. Status: ${taskStatus.status}`,scriptContext);
-                }
-
-                */
-
             } catch (e) {
 
                 log.error(`Error ${e}`)
