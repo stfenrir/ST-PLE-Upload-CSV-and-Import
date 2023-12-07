@@ -1,3 +1,4 @@
+
 /**
  * @NApiVersion 2.1
  * @NScriptType Suitelet
@@ -44,7 +45,9 @@ define(['N/runtime', 'N/ui/serverWidget', 'N/file', 'N/task'],
                     });
 
                     scriptContext.response.writePage(form);
+
                 } else if (scriptContext.request.method === 'POST') {
+
                     // Retrieve the uploaded file
                     let uploadedFile = scriptContext.request.files.custpage_file_upload;
                     log.debug(`UploadedFile ${uploadedFile}`)
