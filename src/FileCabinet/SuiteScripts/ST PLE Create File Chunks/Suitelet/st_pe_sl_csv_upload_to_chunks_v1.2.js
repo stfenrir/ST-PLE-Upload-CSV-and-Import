@@ -49,6 +49,20 @@ define(['N/runtime', 'N/ui/serverWidget', 'N/file', 'N/task'],
                         label: 'Submit File'
                     });
 
+                    let msg = form.addField({
+                        id: 'custpage_msg',
+                        type: serverWidget.FieldType.INLINEHTML,
+                        label: 'Message'
+                    });
+                    fileField.updateLayoutType({
+                        layoutType: serverWidget.FieldLayoutType.OUTSIDE
+                    });
+
+                    msg.updateBreakType({
+                        breakType : serverWidget.FieldBreakType.STARTROW
+                    });
+                    msg.defaultValue = `<br><br><h2><a style="color: blue;" href="${jobStatusPage}">View Current CSV Job Status</a> </h2>`;
+
                     scriptContext.response.writePage(form);
 
                 } else if (scriptContext.request.method === 'POST') {
