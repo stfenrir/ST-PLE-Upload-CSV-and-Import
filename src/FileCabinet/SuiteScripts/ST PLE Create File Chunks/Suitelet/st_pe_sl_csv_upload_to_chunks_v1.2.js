@@ -95,9 +95,9 @@ define(['N/runtime', 'N/ui/serverWidget', 'N/file', 'N/task'],
 
         const processFile = (uploadedFile) => {
 
-            //const CHUNK_SIZE = runtime.getCurrentScript().getParameter({name: 'custscript_number_of_rows_for_csv'});
-            const CHUNK_SIZE = 24999;
-            log.audit('Max Number of Rows: ' + CHUNK_SIZE)
+            const CHUNK_SIZE = runtime.getCurrentScript().getParameter({name: 'custscript_number_of_rows_for_csv'});
+            //const CHUNK_SIZE = 24999;
+            log.audit('Max Number of Rows: ' + CHUNK_SIZE);
 
             return new Promise((resolve, reject) => {
                 const lineIterator = uploadedFile.lines.iterator();
