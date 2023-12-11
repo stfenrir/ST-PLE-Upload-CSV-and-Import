@@ -4,13 +4,12 @@
  */
 define(['N/search', 'N/record', 'N/email', 'N/runtime', 'N/task', 'N/file', 'N/log'],
     function (search, record, email, runtime, task, file, log) {
-        var TO_PROCESS_FOLDER = parseInt(runtime.getCurrentScript().getParameter("custscript_to_processed_folder"));
-        var PROCESSED_FOLDER = parseInt(runtime.getCurrentScript().getParameter("custscript_processed_folder"));
-
-        var ERROR_FOLDER = parseInt(runtime.getCurrentScript().getParameter("custscript_ref_error_au_folder"));
-
-        var CSV_MAPPING_ID = parseInt(runtime.getCurrentScript().getParameter("custscript_csv_map_id"));
-
+        const TO_PROCESS_FOLDER = parseInt(runtime.getCurrentScript().getParameter("custscript_to_processed_folder"));
+        const PROCESSED_FOLDER = parseInt(runtime.getCurrentScript().getParameter("custscript_processed_folder"));
+        const ERROR_FOLDER = parseInt(runtime.getCurrentScript().getParameter("custscript_ref_error_au_folder"));
+        const CSV_MAPPING_ID = parseInt(runtime.getCurrentScript().getParameter("custscript_csv_map_id"));
+        const AUTHOR = -5;
+        const RECIPIENT = 2746;
         function execute(context) {
             processFile(context);
         }
@@ -172,12 +171,11 @@ define(['N/search', 'N/record', 'N/email', 'N/runtime', 'N/task', 'N/file', 'N/l
                 log.debug(" CSV_MAPPING_ID " + CSV_MAPPING_ID);
                 log.error('Email sent : ' + obj.fileName, e.message);
                 email.send({
-                    author: -5,
-                    recipients: 2746,
+                    author: AUTHOR,
+                    recipients: RECIPIENT,
                     subject: 'Error processing CSV Import',
                     body: 'The scheduling of a CSV Import has had an error with File : ' + obj.fileName + '. Please check the file.\n' + e.message,
                 })
-
 
 
             }
