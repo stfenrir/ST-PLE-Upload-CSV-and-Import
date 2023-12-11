@@ -11,9 +11,8 @@ define(['N/runtime', 'N/ui/serverWidget', 'N/file', 'N/task'],
      * @param{task} task
      */
     (runtime, serverWidget, file, task) => {
-        const CSV_FOLDER = 15900;
         const SCHEDULED_SCRIPT = 'customscript_st_trigger_csv_import';
-
+        const CSV_FOLDER =  15900; // Change this to the productions folder id
         /**
          * Defines the Suitelet script trigger point.
          * @param {Object} scriptContext
@@ -23,12 +22,15 @@ define(['N/runtime', 'N/ui/serverWidget', 'N/file', 'N/task'],
          */
         const onRequest = (scriptContext) => {
             try {
+
                 const ACCOUNT_ID = runtime.accountId;
                 log.debug(`Account ID ${ACCOUNT_ID}`)
                 const SANDBOX_ID = '7309664_SB1'
+                //choose values according to the account. PROD or SANDBOX
                 let jobStatusPage = ACCOUNT_ID === SANDBOX_ID ? 'https://7309664-sb1.app.netsuite.com/app/setup/upload/csv/csvstatus.nl?whence=' : 'https://7309664.app.netsuite.com/app/setup/upload/csv/csvstatus.nl?whence=';
                 if (scriptContext.request.method === 'GET') {
 
+                    //Create the first form which will be displayed on method GET.
                     let form = serverWidget.createForm({
                         title: 'Upload CSV to Import',
                         hideNavBar: false
@@ -41,7 +43,6 @@ define(['N/runtime', 'N/ui/serverWidget', 'N/file', 'N/task'],
                         label: 'Upload CSV File'
                     });
 
-
                     fileField.container = CSV_FOLDER;
 
                     // Add a submit button
@@ -49,6 +50,7 @@ define(['N/runtime', 'N/ui/serverWidget', 'N/file', 'N/task'],
                         label: 'Submit File'
                     });
 
+                    //Field for displaying a hyperlinked message to redirect to the CSV Job Status page.
                     let msg = form.addField({
                         id: 'custpage_msg',
                         type: serverWidget.FieldType.INLINEHTML,
@@ -63,10 +65,12 @@ define(['N/runtime', 'N/ui/serverWidget', 'N/file', 'N/task'],
                     });
                     msg.defaultValue = `<br><br><h2><a style="color: blue;" href="${jobStatusPage}">View Current CSV Job Status</a> </h2>`;
 
+                    //Display form on browser
                     scriptContext.response.writePage(form);
 
                 } else if (scriptContext.request.method === 'POST') {
 
+                    //Upon user submit, get the uploaded file.
                     let uploadedFile = scriptContext.request.files.custpage_file_upload;
                     log.debug(`UploadedFile size ${uploadedFile.size}`)
 
@@ -104,9 +108,23 @@ define(['N/runtime', 'N/ui/serverWidget', 'N/file', 'N/task'],
 
             } catch (e) {
                 log.error(`Error Message `, e);
+                let errorForm = serverWidget.createForm({
+                    title: 'Upload CSV to Import',
+                    hideNavBar: false
+                });
+
+                let errorMsg = errorForm.addField({
+                    id: 'custpage_msg',
+                    type: serverWidget.FieldType.INLINEHTML,
+                    label: 'Message'
+                });
+
+                errorMsg.defaultValue = `<h1>Error: ${e}. Please notify your administrator about this error.</h1>`;
+                scriptContext.response.writePage(errorForm);
             }
         };
 
+        //This function chunks the CSV and save it to the CSV_FOLDER.
         const processFile = (uploadedFile) => {
 
             const CHUNK_SIZE = runtime.getCurrentScript().getParameter({name: 'custscript_number_of_rows_for_csv'});
